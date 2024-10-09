@@ -1,23 +1,26 @@
 SHELL := /bin/bash # シェルをbashに指定
+SAIL := ./vendor/bin/sail # Sailコマンドのパス
 
 # プロジェクトのセットアップ
 setup:
-	composer require laravel/breeze --dev
-	composer install
-	./vendor/bin/sail up -d
-	./vendor/bin/sail npm install
-	./vendor/bin/sail npm install react react-dom
-	./vendor/bin/sail npm install @vitejs/plugin-react
-	./vendor/bin/sail npm install -D tailwindcss postcss autoprefixer
-	./vendor/bin/sail npx tailwindcss init
-	echo -e "@tailwind base;\n@tailwind components;\n@tailwind utilities;" > ./resources/css/app.css
-	./vendor/bin/sail artisan breeze:install react
-	./vendor/bin/sail artisan sail:publish
-	./vendor/bin/sail artisan key:generate
-	./vendor/bin/sail artisan storage:link
-	./vendor/bin/sail artisan migrate
-	./vendor/bin/sail artisan db:seed
+	# Sailのインストール
+	php artisan sail:install --with=mysql # Docker環境をセットアップ
+	php artisan sail:publish # Docker環境の設定ファイルを作成
+	$(SAIL) up -d # Docker環境を起動
 
+	# セットアップ
+	$(SAIL) artisan key:generate
+	$(SAIL) artisan storage:link
+	$(SAIL) artisan migrate
+	$(SAIL) artisan db:seed
+
+	# Laravel Breezeのインストール
+	composer require laravel/breeze --dev # Breezeをインストール
+	$(SAIL) artisan breeze:install react # BreezeのReact版をインストール
+
+	# パッケージのインストール
+	npm install
+	npm run dev
 # 開発環境の起動
 start:
 	./vendor/bin/sail up -d
