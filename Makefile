@@ -6,20 +6,21 @@ setup:
 	# Sailのインストール
 	php artisan sail:install --with=mysql # Docker環境をセットアップ
 	php artisan sail:publish # Docker環境の設定ファイルを作成
-	$(SAIL) up -d # Docker環境を起動
 
-	# セットアップ
+	# Laravel Breezeのインストール
+	composer require laravel/breeze --dev # Breezeをインストール
+	php artisan breeze:install react # BreezeのReact版をインストール
+	npm install # npmパッケージをインストール
+
+	# React Routerのインストール
+	npm install react-router-dom
+
+	# プロジェクトの起動
+	$(SAIL) up -d # Docker環境を起動
 	$(SAIL) artisan key:generate
 	$(SAIL) artisan storage:link
 	$(SAIL) artisan migrate
 	$(SAIL) artisan db:seed
-
-	# Laravel Breezeのインストール
-	composer require laravel/breeze --dev # Breezeをインストール
-	$(SAIL) artisan breeze:install react # BreezeのReact版をインストール
-
-	# パッケージのインストール
-	npm install
 	npm run dev
 # 開発環境の起動
 start:
