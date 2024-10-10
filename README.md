@@ -9,3 +9,9 @@ composer create-project --prefer-dist laravel/laravel react-laravel
 ```bash
 make setup
 ```
+
+## Notes
+```bash
+composer require laravel/sanctum
+php artisan migrate # Create the necessary tables
+```
